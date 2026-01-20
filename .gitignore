@@ -59,3 +59,5 @@ coverage/
 
 # seed files
 seed-files/
+*storybook.log
+storybook-static
