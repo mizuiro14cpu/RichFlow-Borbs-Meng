@@ -2,6 +2,17 @@
   <img src="frontend/public/assets/richflow_logo.png" alt="RichFlow Logo" width="300">
   
   # RichFlow — Personal Finance Management
+
+  ## 🧪 Quick Start Storybook Instructions
+  
+  ```bash
+  git clone https://github.com/mizuiro14cpu/RichFlow-Borbs-Meng.git
+  cd RichFlow-Borbs-Meng/
+  git switch -c storybook origin/storybook
+  cd frontend/
+  npm i
+  npm run storybook
+```
   
   ### *See Where Your Money Flows — and Make It Work for You*
 
@@ -101,7 +112,6 @@ Your personal AI-powered financial advisor that analyzes your current income, ex
 | **React Router DOM** | 6.30.1 | Client-side Routing |
 | **Recharts** | 3.4.1 | Data Visualization || **TanStack React Query** | 5.90.12 | Server State Management || **Tailwind CSS** | 4.1.16 | Component Styling (Exclusive) |
 | **Vite** | 7.2.6 | Build Tool & Dev Server |
-| **Storybook** | 8.x | UI Component Development & Testing |
 
 ### Backend
 
@@ -222,20 +232,6 @@ npm run dev
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
 - **Prisma Studio**: `npx prisma studio` (Database GUI)
-
-#### 5. Running Storybook
-
-To development and testing UI components in isolation:
-
-```bash
-# Navigate to frontend directory
-cd ./frontend
-
-# Start Storybook
-npm run storybook
-```
-
-- **Storybook UI**: http://localhost:6006
 
 ---
 
