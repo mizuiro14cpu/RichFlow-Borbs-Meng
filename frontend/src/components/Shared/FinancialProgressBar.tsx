@@ -73,66 +73,35 @@ const FinancialProgressBar: React.FC<FinancialProgressBarProps> = ({
   const displayCurrentValue = formattedCurrentValue ?? `${currencySymbol}${currentValue.toLocaleString()}`;
   const displayTotalValue = formattedTotalValue ?? `${currencySymbol}${totalValue.toLocaleString()}`;
 
-  // Get fill color based on variant
-  const getFillColor = (): string => {
+  // Get specific color values
+  const getColorValues = () => {
     switch (variant) {
       case 'purple':
-        return 'var(--color-purple)';
+        return { text: '#a855f7', bg: 'rgba(168, 85, 247, 0.2)', fill: '#a855f7', shadow: 'rgba(168, 85, 247, 0.5)' };
       case 'green':
-        return '#4ade80';
+        return { text: '#4ade80', bg: 'rgba(74, 222, 128, 0.2)', fill: '#4ade80', shadow: 'rgba(74, 222, 128, 0.5)' };
       case 'red':
-        return '#f87171';
+        return { text: '#f87171', bg: 'rgba(248, 113, 113, 0.2)', fill: '#f87171', shadow: 'rgba(248, 113, 113, 0.5)' };
       case 'gold':
       default:
-        return 'var(--color-gold)';
+        // Using hex for gold to ensure consistency if var isn't available
+        return { text: '#fbbf24', bg: 'rgba(251, 191, 36, 0.2)', fill: '#fbbf24', shadow: 'rgba(251, 191, 36, 0.5)' };
     }
   };
 
-  // Get track background gradient based on variant
-  const getTrackBackground = (): string => {
-    switch (variant) {
-      case 'purple':
-        return 'rgba(115, 69, 175, 0.2)';
-      case 'green':
-        return 'rgba(74, 222, 128, 0.2)';
-      case 'red':
-        return 'rgba(248, 113, 113, 0.2)';
-      case 'gold':
-      default:
-        return 'rgba(237, 202, 105, 0.2)';
-    }
-  };
+  const colors = getColorValues();
 
   return (
-    <div className={`financial-progress-bar ${className}`.trim()}>
+    <div className={`w-full ${className}`.trim()}>
       {/* Header: Label and Current Value */}
-      <div 
-        className="flex justify-between items-center mb-2"
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '0.5rem'
-        }}
-      >
-        <span 
-          className="text-sm font-medium"
-          style={{ 
-            color: 'var(--color-text-dim)', 
-            fontSize: '0.875rem',
-            fontWeight: 500 
-          }}
-        >
+      <div className="flex justify-between items-end mb-2">
+        <span className="text-sm font-medium text-[var(--color-text-dim)] uppercase tracking-wide opacity-80">
           {label}
         </span>
         {showCurrentValue && (
           <span 
-            className="text-sm font-semibold"
-            style={{ 
-              color: getFillColor(), 
-              fontSize: '0.875rem',
-              fontWeight: 600 
-            }}
+            className="text-lg font-bold font-mono tracking-tight"
+            style={{ color: colors.text }}
           >
             {displayCurrentValue}
           </span>
@@ -141,64 +110,58 @@ const FinancialProgressBar: React.FC<FinancialProgressBarProps> = ({
 
       {/* Progress Track */}
       <div 
-        className="progress-track"
-        style={{
-          width: '100%',
-          height: '12px',
-          borderRadius: '6px',
-          backgroundColor: getTrackBackground(),
-          overflow: 'hidden',
-          position: 'relative',
-        }}
+        className="relative w-full h-3 rounded-full overflow-hidden backdrop-blur-sm"
+        style={{ backgroundColor: colors.bg }}
       >
         {/* Progress Fill */}
         <div
-          className="progress-fill"
+          className="h-full rounded-full transition-all duration-1000 ease-out relative"
           style={{
             width: `${percentage}%`,
-            height: '100%',
-            borderRadius: '6px',
-            backgroundColor: getFillColor(),
-            transition: 'width 0.5s ease-out',
-            boxShadow: `0 0 8px ${getFillColor()}40`,
+            backgroundColor: colors.fill,
+            boxShadow: `0 0 10px ${colors.shadow}`,
           }}
-        />
+        >
+          {/* Shimmer Effect */}
+          <div 
+            className="absolute top-0 left-0 bottom-0 right-0 w-full h-full"
+            style={{
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+              transform: 'skewX(-20deg)',
+              animation: 'shimmer 2s infinite',
+            }}
+          />
+        </div>
       </div>
 
       {/* Footer: Percentage and Target */}
-      <div 
-        className="flex justify-between items-center mt-2"
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginTop: '0.5rem'
-        }}
-      >
+      <div className="flex justify-between items-center mt-2 text-xs">
         {showPercentage && (
           <span 
-            className="text-xs font-bold"
+            className="font-bold py-0.5 px-1.5 rounded"
             style={{ 
-              color: getFillColor(), 
-              fontSize: '0.75rem',
-              fontWeight: 700 
+              color: colors.text, 
+              backgroundColor: colors.bg 
             }}
           >
             {percentage}%
           </span>
         )}
         {showTargetValue && (
-          <span 
-            className="text-xs"
-            style={{ 
-              color: 'var(--color-text-dim)', 
-              fontSize: '0.75rem' 
-            }}
-          >
-            {targetLabel} {displayTotalValue}
+          <span className="text-[var(--color-text-dim)] flex items-center gap-1">
+            <span className="opacity-70">{targetLabel}</span>
+            <span className="font-medium text-white/50">{displayTotalValue}</span>
           </span>
         )}
       </div>
+      
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-150%) skewX(-20deg); }
+          50% { transform: translateX(150%) skewX(-20deg); }
+          100% { transform: translateX(150%) skewX(-20deg); }
+        }
+      `}</style>
     </div>
   );
 };
