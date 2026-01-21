@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { fn, userEvent, within, expect } from '@storybook/test';
 import Sidebar from './Sidebar';
 import { AuthProvider } from '../../context/AuthContext';
 import { MemoryRouter } from 'react-router-dom';
@@ -19,12 +19,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Decorator factory: mock a logged-in user by stubbing fetch responses used by AuthProvider
 const makeWithMockAuth = (initialEntries: string[]) => (StoryComponent: any) => {
     React.useEffect(() => {
         const originalFetch = (globalThis as any).fetch;
 
-        // Pretend we have a session so refreshAccessToken will run
         try {
             localStorage.setItem('hasSession', 'true');
         } catch { }
@@ -68,6 +66,7 @@ const makeWithMockAuth = (initialEntries: string[]) => (StoryComponent: any) => 
 
 const WithMockAuth = makeWithMockAuth(['/']);
 const WithMockAuthAnalysis = makeWithMockAuth(['/analysis']);
+const WithMockAuthDashboard = makeWithMockAuth(['/dashboard']);
 
 export const Default: Story = {
     decorators: [WithMockAuth],
@@ -92,5 +91,31 @@ export const AnalysisPage: Story = {
     args: {
         ...Default.args,
         mobileOpen: true,
+    },
+};
+
+export const AnalysisNavigationTest: Story = {
+    decorators: [WithMockAuthDashboard],
+    args: {
+        ...Default.args,
+        mobileOpen: true,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+        await sleep(1500);
+        // click analysis btn
+        const analysisButton = canvas.getByText('Analysis');
+        await userEvent.click(analysisButton);
+
+        await sleep(1000);
+
+        await canvas.findByText('Dashboard');
+
+        // check if sidebar content changes
+        await expect(canvas.queryByText('Saki Assistant')).toBeNull();
+        await expect(canvas.queryByText('Recent Activity')).toBeNull();
     },
 };
