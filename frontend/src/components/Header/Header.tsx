@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-interface HeaderProps {
+export interface HeaderProps {
   onAddBalanceSheet?: () => void;
   onToggleBalanceSheet?: (show: boolean) => void;
   balanceSheetExists?: boolean;
